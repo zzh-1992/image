@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>springboot-thymeleaf demo</title>
+
+    <script lang="javascript" type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/logincss.css}" type="text/css"/>
+</head>
+    <body>
+        <div class="login">
+            <div class="login-form">
+                <h2 class="title">欢迎登录</h2>
+
+                <div class="el-input">
+                    <label>账号</label>
+                    <input id="phone" name="phone" type="text" class="input_text" placeholder="请输入11位手机号码"
+                           maxlength="11"/>
+                </div>
+
+                <div class="el-input" >
+                    <label>密码</label>
+                    <input id="loginPassword" name="loginPassword" type="password" placeholder="请输入登录密码"
+                           class="input_text" maxlength="16">
+                </div>
+
+                <div class="login-code-img">
+                    <div id="showCaptcha" class="login-code-img" style="display:block;">
+                        <input id="captcha" type="text" class="yzm" placeholder="click right pitcher to refresh"/>
+                        <!--<img src="data:image/gif;base64,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" id="imgCode"
+                             style="cursor:pointer;border:0; display:inline;vertical-align:middle;"/>-->
+                        <img th:src="${img}" id="imgCode"
+                             style="cursor:pointer;border:0; display:inline;vertical-align:middle;"/>
+                    </div>
+                    <ul>
+                        <li id="showId"
+                            style="color:red;font-size:12px;width:222px;margin-top:10px;margin-bottom:10px;line-height:18px;"></li>
+                    </ul>
+                </div>
+
+                <div class="bn-login" id="loginId">
+                    <button>登&nbsp;&nbsp;录</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script type="text/javascript">
+    $(function (){
+
+        $("#imgCode").click(function login(){
+            $.ajax({
+                url: "http://127.0.0.1:8089/captchaImage",
+                type: "get",
+                data: "json",
+                success: function (data){
+                    $("#imgCode").attr('src',data.img);
+                }
+            })
+        })
+
+    })
+</script>
