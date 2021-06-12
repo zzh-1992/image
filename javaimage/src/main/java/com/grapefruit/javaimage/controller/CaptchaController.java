@@ -23,12 +23,9 @@ import java.util.UUID;
  */
 @RestController
 public class CaptchaController {
-    private static final String CAPTCHA_CODE_KEY = "captcha_codes:";
-
+    private static final String imgdata = "data:image/gif;base64,";
     @Resource(name = "captchaProducerMath")
     private Producer captchaProducerMath;
-
-    private static final String imgdata = "data:image/gif;base64,";
 
     /**
      * 生成验证码
@@ -37,15 +34,13 @@ public class CaptchaController {
     public AjaxResult getCode() {
         // 保存验证码信息
         String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
-        String verifyKey = CAPTCHA_CODE_KEY + uuid;
 
-        String capStr = null, code = null;
-        BufferedImage image = null;
+        String capStr;
+        BufferedImage image;
 
         // 生成验证码
         String capText = captchaProducerMath.createText();
         capStr = capText.substring(0, capText.lastIndexOf("@"));
-        code = capText.substring(capText.lastIndexOf("@") + 1);
         image = captchaProducerMath.createImage(capStr);
 
         // 转换流信息写出
@@ -58,7 +53,7 @@ public class CaptchaController {
 
         AjaxResult ajax = AjaxResult.success();
         ajax.put("uuid", uuid);
-        ajax.put("img",imgdata + Base64.encode(os.toByteArray()));
+        ajax.put("img", imgdata + Base64.encode(os.toByteArray()));
         return ajax;
     }
 
