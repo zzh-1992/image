@@ -5,6 +5,7 @@
     <title>springboot-thymeleaf demo</title>
 
     <script lang="javascript" type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+    <script lang="javascript" type="text/javascript" th:src="@{/js/login.js}"></script>
 
     <link rel="stylesheet" th:href="@{/css/logincss.css}" type="text/css"/>
 </head>
@@ -46,15 +47,6 @@
 </html>
 <script type="text/javascript">
     $(function () {
-        $("#imgCode").click(function login() {
-            $.ajax({
-                url: "http://127.0.0.1:8088/captchaImage",
-                type: "get",
-                data: "json",
-                success: function (data) {
-                    $("#imgCode").attr('src', data.img);
-                }
-            })
-        })
+        $("#imgCode").click(login)
     })
 </script>
