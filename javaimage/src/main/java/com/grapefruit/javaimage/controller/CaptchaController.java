@@ -38,7 +38,7 @@ public class CaptchaController {
         String capStr;
         BufferedImage image;
 
-        // 生成验证码
+        // 生成验证码(String[] strings = capText.split("@"); 使用"@"分割字符串,得到算式和结果,结果存储用于后续交验)
         String capText = captchaProducerMath.createText();
         capStr = capText.substring(0, capText.lastIndexOf("@"));
         image = captchaProducerMath.createImage(capStr);
