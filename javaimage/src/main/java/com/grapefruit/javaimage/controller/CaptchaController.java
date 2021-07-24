@@ -31,7 +31,7 @@ public class CaptchaController {
     private Producer captchaProducerMath;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String,String> redisTemplate;
 
     /**
      * 生成验证码
@@ -50,11 +50,13 @@ public class CaptchaController {
         // 截取问题
         capStr = capText.substring(0, capText.lastIndexOf("@"));
 
-        // 截取结果 并存入redis(key:capText,valuse:resoult)
+        // 截取结果 并存入redis(key:questionId,valuse:resoult)
         String resoult = capText.split("@")[1];
 
+        String questionId = UUID.randomUUID().toString().replace("-","");
+
         // 保存问题及时间(60秒)
-        redisTemplate.opsForValue().set(capText, resoult, 60, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(questionId, resoult, 60, TimeUnit.SECONDS);
         image = captchaProducerMath.createImage(capStr);
 
         // 转换流信息写出
@@ -68,6 +70,7 @@ public class CaptchaController {
         AjaxResult ajax = AjaxResult.success();
         ajax.put("uuid", uuid);
         ajax.put("img", imgdata + Base64.encode(os.toByteArray()));
+        ajax.put("questionId",questionId);
         return ajax;
     }
 
