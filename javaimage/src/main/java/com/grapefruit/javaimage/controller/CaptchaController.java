@@ -5,6 +5,8 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 验证码操作处理
@@ -26,6 +29,9 @@ public class CaptchaController {
     private static final String imgdata = "data:image/gif;base64,";
     @Resource(name = "captchaProducerMath")
     private Producer captchaProducerMath;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 生成验证码
@@ -40,7 +46,15 @@ public class CaptchaController {
 
         // 生成验证码(String[] strings = capText.split("@"); 使用"@"分割字符串,得到算式和结果,结果存储用于后续交验)
         String capText = captchaProducerMath.createText();
+
+        // 截取问题
         capStr = capText.substring(0, capText.lastIndexOf("@"));
+
+        // 截取结果 并存入redis(key:capText,valuse:resoult)
+        String resoult = capText.split("@")[1];
+
+        // 保存问题及时间(60秒)
+        redisTemplate.opsForValue().set(capText, resoult, 60, TimeUnit.SECONDS);
         image = captchaProducerMath.createImage(capStr);
 
         // 转换流信息写出
