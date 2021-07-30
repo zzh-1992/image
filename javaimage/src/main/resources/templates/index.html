@@ -1,52 +1,104 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title>springboot-thymeleaf demo</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    <title>HOME HOME HOME</title>
+    <link rel="stylesheet" th:href="@{/css/logincss.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
 
     <script lang="javascript" type="text/javascript" th:src="@{/js/jquery-3.6.0.js}"></script>
+    <script lang="javascript" type="text/javascript" th:src="@{/js/signup.js}"></script>
     <script lang="javascript" type="text/javascript" th:src="@{/js/login.js}"></script>
+    <script lang="javascript" type="text/javascript" th:src="@{/js/index.js}"></script>
+    <script lang="javascript" type="text/javascript" th:src="@{/js/note.js}"></script>
 
-    <link rel="stylesheet" th:href="@{/css/logincss.css}" type="text/css"/>
+    <script lang="javascript" type="text/javascript" th:src="@{/js/getCapture.js}"></script>
 </head>
+
+
 <body>
-<div class="login">
-    <div class="login-form">
-        <h2 class="title">Welcome</h2>
 
-        <div class="el-input">
-            <label>账号</label>
-            <input id="phone" name="phone" type="text" class="input_text" placeholder="请输入11位手机号码"
-                   maxlength="11"/>
-        </div>
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
 
-        <div class="el-input">
-            <label>密码</label>
-            <input id="loginPassword" name="loginPassword" type="password" placeholder="请输入登录密码"
-                   class="input_text" maxlength="16">
-        </div>
 
-        <div class="login-code-img">
-            <div id="showCaptcha" class="login-code-img" style="display:block;">
-                <input id="captcha" type="text" class="yzm" placeholder="click right pitcher to refresh"/>
-                <img th:src="${img}" id="imgCode"
-                     style="cursor:pointer;border:0; display:inline;vertical-align:middle;"/>
+<div class="cotn_principal">
+    <div class="cont_centrar">
+        <div class="cont_login">
+            <div class="cont_info_log_sign_up">
+                <div class="col_md_login">
+                    <div class="cont_ba_opcitiy">
+                        <h2>LOGIN</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur.</p>
+                        <button class="btn_login" onClick="cambiar_login()">LOGIN</button>
+                    </div>
+                </div>
+                <div class="col_md_sign_up">
+                    <div class="cont_ba_opcitiy">
+                        <h2>SIGN UP</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur.</p>
+                        <button class="btn_sign_up" onClick="cambiar_sign_up()">SIGN UP</button>
+                    </div>
+                </div>
             </div>
-            <ul>
-                <li id="showId"
-                    style="color:red;font-size:12px;width:222px;margin-top:10px;margin-bottom:10px;line-height:18px;"></li>
-            </ul>
-        </div>
+            <div class="cont_back_info">
+                <div class="cont_img_back_grey"><img src="img/po.jpg" alt=""/></div>
+            </div>
+            <div class="cont_forms">
+                <div class="cont_img_back_"><img src="po.jpg" alt=""/></div>
+                <div class="cont_form_login"><a href="#" onClick="ocultar_login_sign_up()"><i class="material-icons">&#xE5C4;</i></a>
+                    <h2>LOGIN</h2>
+                    <input id="loginPhone" type="text" placeholder="手机号"/>
+                    <input id="loginPassword" type="password" placeholder="密码"/>
+                    <input id=loginNote type="password" placeholder="短信验证码"/>
 
-        <div class="bn-login" id="loginId">
-            <button>登&nbsp;&nbsp;录</button>
+                    <button id="noteButton" class="note_login">点击获取短信验证码</button>
+
+                    <button id="loginButton" class="btn_login2">LOGIN</button>
+                </div>
+                <div class="cont_form_sign_up"><a href="#" onClick="ocultar_login_sign_up()"><i class="material-icons">&#xE5C4;</i></a>
+                    <h2>SIGN UP</h2>
+                    <input id="phone" type="text" placeholder="phone"/>
+                    <input id="password" type="password" placeholder="password"/>
+
+                    <input id="nickName" type="text" placeholder="nickName"/>
+                    <input id="email" type="text" placeholder="email"/>
+
+                    <input id="captcha" type="text" class="yzm" placeholder="click down pitcher to refresh"/>
+
+                    <input id="questionId" type="hidden" class="hide-icon" placeholder="questionId"/>
+                    <!--<input id="questionId" type="text" class="input_text"/>-->
+                    <img th:src="${img}" id="imgCode" class="localimg"
+                         style="cursor:pointer;border:0; display:inline;vertical-align:middle;"/>
+
+                    <button id="signup" class="btn_sign_up">SIGN UP</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
 </body>
 </html>
+
 <script type="text/javascript">
     $(function () {
-        $("#imgCode").click(login)
+        $("#imgCode").click(getCapture)
+    })
+
+    $(function () {
+        $("#signup").click(signup)
+    })
+
+    $(function () {
+        $("#noteButton").click(note)
+    })
+
+    $(function () {
+        $("#loginButton").click(login)
     })
 </script>
+
