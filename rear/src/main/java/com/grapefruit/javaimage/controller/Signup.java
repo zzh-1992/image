@@ -6,6 +6,7 @@ package com.grapefruit.javaimage.controller;
 
 import com.grapefruit.javaimage.req.LoginReq;
 import com.grapefruit.javaimage.rsp.AjaxResult;
+import com.grapefruit.javaimage.service.UserService;
 import com.grapefruit.utils.security.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,40 +21,50 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 /**
- * 登陆处理
+ * 用户注册处理
  *
  * @author zhihuangzhang
  * @version 1.0
- * @date 2021-06-12 7:12 下午
+ * @date 2021-07-31 1:38 下午
  */
 @RestController
 @RequestMapping("/")
-public class Login {
-
+public class Signup {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    @PostMapping(value = "/login")
-    public AjaxResult login(@RequestBody @Validated LoginReq req) throws NoSuchAlgorithmException, IOException,
+    @Autowired
+    private UserService userService;
+
+    @PostMapping(value = "/signup")
+    public AjaxResult signup(@RequestBody @Validated LoginReq req) throws NoSuchAlgorithmException, IOException,
             InvalidKeySpecException {
         AjaxResult ajax = new AjaxResult();
-
-        // 判断是否有该用户(暂时不处理)
-        String account = req.getAccount();
+        String phone = req.getPhone();
         String password = req.getPassword();
-
-        // 使用账户及密码生成token  userName password uuid
-        String token = TokenUtils.generateTokenWithRSA512(account, password, 30 * 60L);
-
-        // 返回token
-        ajax.put("token", token);
-
+        String nickName = req.getNickName();
+        String email = req.getEmail();
         String resoult = req.getResoult();
         String questionId = req.getQuestionId();
+        // 从redis获取问题答案
         String cachingResoult = redisTemplate.opsForValue().get(questionId);
+        if (cachingResoult == null || !cachingResoult.equals(resoult)) {
+            // TODO 验证码已经失效
+            ajax.put("error","答案错误,请尝试刷新图片");
+            ajax.put("code","0");
+            return ajax;
+        }
+        // save user
+        // TODO handle error
+        userService.save(phone, password, nickName, email);
 
+        // 使用账户及密码生成token  userName password uuid
+        String token = TokenUtils.generateTokenWithRSA512(phone, password, 30 * 60L);
+        // 返回token
+        ajax.put("phone", phone);
+        ajax.put("token", token);
+        ajax.put("code", "1");
         // 异常情况暂时不处理
-
         return ajax;
     }
 }
