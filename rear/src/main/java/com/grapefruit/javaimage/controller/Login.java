@@ -40,8 +40,6 @@ public class Login {
     @PostMapping(value = "/login")
     public AjaxResult login(@RequestBody @Validated LoginReq req) throws NoSuchAlgorithmException, IOException,
             InvalidKeySpecException {
-        AjaxResult ajax = new AjaxResult();
-
         // 判断是否有该用户(暂时不处理)
         String phone = req.getPhone();
         String password = req.getPassword();
@@ -51,31 +49,25 @@ public class Login {
         String cacheNote = redisTemplate.opsForValue().get(phone);
         if (cacheNote == null || !cacheNote.equals(note)) {
             // TODO 验证码无效
-            ajax.put("error", "验证码无效");
-            ajax.put("code", "0");
-            return ajax;
+            return AjaxResult.error("验证码无效");
         }
 
         // 从数据库获取用户信息
         User user = userService.selectUserByPhone(phone);
         if (user == null) {
-            ajax.put("error", "该用户没有注册");
-            ajax.put("code", "0");
-            return ajax;
+            return AjaxResult.error("该用户没有注册");
         }
         if (!user.getPassword().equals(password)) {
-            ajax.put("error", "该用户密码错误");
-            ajax.put("code", "0");
-            return ajax;
+            return AjaxResult.error("请确认该用户账号是否正常");
         }
 
         // 使用账户及密码生成token  userName password uuid
         String token = TokenUtils.generateTokenWithRSA512(phone, password, 30 * 60L);
 
         // 返回token
-        ajax.put("phone", phone);
-        ajax.put("token", token);
-        ajax.put("code", "1");
-        return ajax;
+        AjaxResult success = AjaxResult.success();
+        success.put("phone", phone);
+        success.put("token", token);
+        return success;
     }
 }

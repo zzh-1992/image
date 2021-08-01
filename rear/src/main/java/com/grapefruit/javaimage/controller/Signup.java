@@ -39,20 +39,19 @@ public class Signup {
     @PostMapping(value = "/signup")
     public AjaxResult signup(@RequestBody @Validated LoginReq req) throws NoSuchAlgorithmException, IOException,
             InvalidKeySpecException {
-        AjaxResult ajax = new AjaxResult();
+
         String phone = req.getPhone();
         String password = req.getPassword();
         String nickName = req.getNickName();
         String email = req.getEmail();
         String resoult = req.getResoult();
         String questionId = req.getQuestionId();
+
         // 从redis获取问题答案
         String cachingResoult = redisTemplate.opsForValue().get(questionId);
         if (cachingResoult == null || !cachingResoult.equals(resoult)) {
             // TODO 验证码已经失效
-            ajax.put("error","答案错误,请尝试刷新图片");
-            ajax.put("code","0");
-            return ajax;
+            return AjaxResult.error("答案错误,请尝试刷新图片");
         }
         // save user
         // TODO handle error
@@ -61,10 +60,10 @@ public class Signup {
         // 使用账户及密码生成token  userName password uuid
         String token = TokenUtils.generateTokenWithRSA512(phone, password, 30 * 60L);
         // 返回token
-        ajax.put("phone", phone);
-        ajax.put("token", token);
-        ajax.put("code", "1");
+        AjaxResult success = AjaxResult.success();
+        success.put("phone", phone);
+        success.put("token", token);
         // 异常情况暂时不处理
-        return ajax;
+        return success;
     }
 }

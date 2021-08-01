@@ -5,6 +5,8 @@
 package com.grapefruit.javaimage.controller;
 
 import com.grapefruit.javaimage.req.LoginReq;
+import com.grapefruit.javaimage.rsp.AjaxResult;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,21 +32,29 @@ public class Note {
     private RedisTemplate<String, String> redisTemplate;
 
     @PostMapping("/note")
-    public String getNote(@RequestBody LoginReq req) {
-
+    public AjaxResult getNote(@RequestBody LoginReq req) {
         String phone = req.getPhone();
+        AjaxResult ajax = new AjaxResult();
+        if(StringUtils.isEmpty(phone)){
+            return AjaxResult.error("phone cannot be empty");
+        }
 
         StringBuilder sb = new StringBuilder();
         SecureRandom random = new SecureRandom();
+        // 生成4位随机数
         for (int i = 0; i <= 3; i++) {
             int num = random.nextInt(9);
             sb.append(num);
         }
         String note = sb.toString();
+
+        // 保存phone:note 4位随机数到redis
         redisTemplate.opsForValue().set(phone, note, 30, TimeUnit.SECONDS);
-        return note;
-        // 生成phone-4位随机数
-        // 调用第三方接口发送消息
-        // 保存phone 4位随机数到redis
+
+        // 返回服务验证码note
+        ajax.put("note",note);
+        ajax.put("code","1");
+        return ajax;
+
     }
 }
