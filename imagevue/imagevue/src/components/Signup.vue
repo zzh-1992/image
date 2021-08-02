@@ -63,6 +63,7 @@
         </div>
       </div>
     </div>
+    <br>
   </div>
 </template>
 
@@ -73,6 +74,13 @@
 import po from '../assets/login-background.jpg'
 
 export default {
+  name:"Signup",
+  beforeDestroy() {
+    console.log("Signup 组件即将被销毁")
+  },
+  mounted() {
+    console.log("Signup 组件挂载完毕")
+  },
   data() {
     return {
       msg: 'signup component',
@@ -84,6 +92,15 @@ export default {
   },
   components: {},
   methods: {
+    // 页面跳转
+    goTo() {
+      //直接跳转
+      this.$router.push('/about');
+
+      //带参数跳转
+      //this.$router.push({path:'/testDemo',query:{setid:123456}});
+      //this.$router.push({name:'testDemo',params:{setid:111222}});
+    },
     // 注册方法
     signup() {
       var api = 'http://127.0.0.1:8888/signup';
@@ -96,15 +113,23 @@ export default {
         questionId: this.qId,
       };
       this.$http.post(api, p).then((response) => {
-        console.log("res token:" + response.data.token)
-        console.log("res phone:" + response.data.phone)
-        console.log("res code:" + response.data.code)
+        if (response.data.code === "1") {
+          console.log("res token:" + response.data.token)
+          this.token = response.data.token
+          console.log("res phone:" + response.data.phone)
+          console.log("res code:" + response.data.code)
+
+          // 调用方法切换组件
+          this.goTo()
+        } else {
+          window.alert("请求错误:" + response.data.msg)
+        }
 
         // 将后端返回的toke写入data.token
         this.token = response.data.token;
         //注意this指向
       }, function (err) {
-        console.log(err);
+        console.log("system error:" + err);
       })
     },
     // 获取验证图片
@@ -132,9 +157,11 @@ export default {
       };
       this.$http.post(api, p).then((response) => {
         if (response.data.code === "1") {
-          window.alert("res:" + response.data.note)
+          window.alert("res:" + response.data.token)
+          this.token = response.data.token
+          this.goTo()
         } else {
-          window.alert("请求错误:" + response.data.error);
+          window.alert("请求错误:" + response.data.msg);
         }
         //注意this指向
       }, function (err) {
@@ -149,7 +176,12 @@ export default {
         phone: this.$refs.loginPhone.value,
       };
       this.$http.post(api, p).then((response) => {
-        window.alert("短信验证码是:" + response.data.note)
+        if (response.data.code === "1") {
+          window.alert("短信验证码是:" + response.data.note)
+        } else {
+          window.alert("错误请求:" + response.data.msg)
+        }
+
         //注意this指向
       }, function (err) {
         console.log(err);
@@ -192,13 +224,17 @@ export default {
       setTimeout(function () {
         document.querySelector('.cont_form_sign_up').style.display = "none";
         document.querySelector('.cont_form_login').style.display = "none";
-      }, 500);
+      }, 100);
     }
   }
 }
 </script>
 
 <style scoped>
+
+input {
+  opacity: 0.5
+}
 
 body {
   width: 100%;
