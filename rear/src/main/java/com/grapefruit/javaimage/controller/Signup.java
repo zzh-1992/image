@@ -8,6 +8,7 @@ import com.grapefruit.javaimage.req.LoginReq;
 import com.grapefruit.javaimage.rsp.AjaxResult;
 import com.grapefruit.javaimage.service.UserService;
 import com.grapefruit.utils.security.TokenUtils;
+import com.grapefruit.utils.string.LocalStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
@@ -54,14 +55,15 @@ public class Signup {
             return AjaxResult.error("答案错误,请尝试刷新图片");
         }
         // save user
-        // TODO handle error
-        userService.save(phone, password, nickName, email);
+        // TODO handle encrypt password and error
+        String uid = LocalStringUtils.getUUID();
+        userService.save(uid, phone, password, nickName, email);
 
         // 使用账户及密码生成token  userName password uuid
         String token = TokenUtils.generateTokenWithRSA512(phone, password, 30 * 60L);
         // 返回token
         AjaxResult success = AjaxResult.success();
-        success.put("phone", phone);
+        success.put("uid", uid);
         success.put("token", token);
         // 异常情况暂时不处理
         return success;

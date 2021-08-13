@@ -66,7 +66,7 @@ public class Login {
 
         // 返回token
         AjaxResult success = AjaxResult.success();
-        success.put("phone", phone);
+        success.put("uid", user.getUid());
         success.put("token", token);
         return success;
     }

@@ -35,7 +35,7 @@ public class Note {
     public AjaxResult getNote(@RequestBody LoginReq req) {
         String phone = req.getPhone();
         AjaxResult ajax = new AjaxResult();
-        if(StringUtils.isEmpty(phone)){
+        if (StringUtils.isEmpty(phone)) {
             return AjaxResult.error("phone cannot be empty");
         }
 
@@ -49,12 +49,11 @@ public class Note {
         String note = sb.toString();
 
         // 保存phone:note 4位随机数到redis
-        redisTemplate.opsForValue().set(phone, note, 30, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(phone, note, 60, TimeUnit.SECONDS);
 
         // 返回服务验证码note
-        ajax.put("note",note);
-        ajax.put("code","1");
+        ajax.put("note", note);
+        ajax.put("code", "1");
         return ajax;
-
     }
 }

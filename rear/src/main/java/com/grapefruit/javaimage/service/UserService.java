@@ -15,7 +15,11 @@ import com.grapefruit.javaimage.entity.User;
  */
 public interface UserService {
 
-    void save(String phone, String password, String nickName, String email);
+    void save(String uid,String phone, String password, String nickName, String email);
 
     User selectUserByPhone(String phone);
+
+    User selectUserByUid(String uid);
+
+    User selectUserByPhoneAndPassword(String phone,String password);
 }

@@ -6,7 +6,6 @@ package com.grapefruit.javaimage.service;
 
 import com.grapefruit.javaimage.entity.User;
 import com.grapefruit.javaimage.mapper.UserMapper;
-import com.grapefruit.utils.string.LocalStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +27,12 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public void save(String phone, String password, String nickName, String email) {
+    public void save(String uid, String phone, String password, String nickName, String email) {
         String time = LocalDateTime.now(Clock.systemUTC()).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
-        String uid = LocalStringUtils.getUUID();
         String name = "Grape";
-        // 先默认 1 admin
-        int roleId = 1;
+        // 先默认 2 teacher
+        int roleId = 2;
         User user = User.builder()
                 .uid(uid)
                 .name(name)
@@ -54,5 +52,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User selectUserByPhone(String phone) {
         return userMapper.selectUserByPhone(phone);
+    }
+
+    @Override
+    public User selectUserByUid(String uid) {
+        return userMapper.selectUserByUid(uid);
+    }
+
+    @Override
+    public User selectUserByPhoneAndPassword(String phone, String password) {
+        return userMapper.selectUserByPhoneAndPassword(phone, password);
     }
 }

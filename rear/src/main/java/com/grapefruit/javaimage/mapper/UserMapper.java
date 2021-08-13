@@ -30,4 +30,21 @@ public interface UserMapper {
      * @return user
      */
     User selectUserByPhone(String phone);
+
+    /**
+     * 使用uid查询用户
+     *
+     * @param uid uid
+     * @return user
+     */
+    User selectUserByUid(String uid);
+
+    /**
+     * 使用phone,password查询用户
+     *
+     * @param phone    phone
+     * @param password password
+     * @return user
+     */
+    User selectUserByPhoneAndPassword(String phone, String password);
 }
