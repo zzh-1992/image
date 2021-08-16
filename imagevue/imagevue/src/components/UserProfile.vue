@@ -38,6 +38,7 @@
 </template>
 
 <script>
+
 import axios from "axios";
 
 export default {
@@ -53,10 +54,9 @@ export default {
   components: {},
 
   mounted() {
-
     var data = {'token': localStorage.getItem('token'), uid: localStorage.getItem('uid')}
     axios
-      .post("http://47.115.42.52:8888/getUserDetail", data)
+      .post("/getUserDetail", data)
       .then(response => {
         this.user = response.data.user;
         var roleId = this.user.roleId;

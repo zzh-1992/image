@@ -71,9 +71,10 @@
 
 // 导入静态图片
 import po from '../assets/login-background.jpg'
+import axios from "axios";
 
 export default {
-  name:"Signup",
+  name: "Signup",
   beforeDestroy() {
     console.log("Signup 组件即将被销毁")
   },
@@ -86,7 +87,8 @@ export default {
       codeUrl: "",
       qId: "",
       token: "",
-      po: po
+      po: po,
+      uid: '',
     }
   },
   components: {},
@@ -100,9 +102,25 @@ export default {
       //this.$router.push({path:'/testDemo',query:{setid:123456}});
       //this.$router.push({name:'testDemo',params:{setid:111222}});
     },
+    getTechnicals() {
+      // 从后台加载数据
+      var api = '/getTechnicals';
+      var p = {
+        phone: localStorage.getItem('phone'),
+      };
+      axios
+        .post(api, p)
+        .then((response) => {
+          localStorage.setItem('myList', response.data)
+        })
+        .catch(err => {
+          console.log("system error:" + err);
+        })
+    },
+
     // 注册方法
     signup() {
-      var api = 'http://47.115.42.52:8888/signup';
+      var api = '/signup';
       var p = {
         phone: this.$refs.phone.value,
         password: this.$refs.password.value,
@@ -111,86 +129,99 @@ export default {
         resoult: this.$refs.resoult.value,
         questionId: this.qId,
       };
-      this.$http.post(api, p).then((response) => {
-        if (response.data.code === "1") {
-          console.log("res token:" + response.data.token)
-          this.token = response.data.token
-          console.log("res phone:" + response.data.phone)
-          console.log("res code:" + response.data.code)
+      axios
+        .post(api, p)
+        .then((response) => {
+          if (response.data.code === "1") {
+            console.log("res token:" + response.data.token)
+            this.token = response.data.token
+            this.uid = response.data.uid
 
-          // 注册成功后将token存储在localStorage
-          localStorage.setItem('token',this.token)
+            // 注册成功后将token,uid存储在localStorage
+            localStorage.setItem('token', this.token)
+            localStorage.setItem('uid', this.uid)
 
-          // 调用方法切换组件
-          this.goTo()
-        } else {
-          window.alert("请求错误:" + response.data.msg)
-        }
+            this.getTechnicals()
 
-        // 将后端返回的toke写入data.token
-        this.token = response.data.token;
-        //注意this指向
-      }, function (err) {
+            // 调用方法切换组件
+            this.goTo()
+          } else {
+            window.alert("请求错误:" + response.data.msg)
+          }
+
+          // 将后端返回的toke写入data.token
+          this.token = response.data.token;
+          //注意this指向
+        }).catch(err => {
         console.log("system error:" + err);
       })
     },
     // 获取验证图片
     getCapture() {
       // 获取图片流
-      var api = 'http://47.115.42.52:8888/captchaImage';
-      this.$http.get(api).then((response) => {
-        // 将后端返回的图片流写入data.codeUrl
-        this.codeUrl = response.data.img;
-        // 将后端返回的问题qId写入data.qId
-        this.qId = response.data.qId;
-        // console.log("qId:" + this.qId)
-        // 注意this指向
-      }, function (err) {
-        // console.log(err);
-      })
+      var api = '/captchaImage';
+      axios
+        .get(api)
+        .then((response) => {
+          // 将后端返回的图片流写入data.codeUrl
+          this.codeUrl = response.data.img;
+          // 将后端返回的问题qId写入data.qId
+          this.qId = response.data.qId;
+          // console.log("qId:" + this.qId)
+          // 注意this指向
+        })
+        .catch(err => {
+          console.log(err);
+        })
     },
     // 登陆方法
     login() {
-      var api = 'http://47.115.42.52:8888/login';
+      var api = '/login';
       var p = {
         phone: this.$refs.loginPhone.value,
         password: this.$refs.loginPassword.value,
         note: this.$refs.loginNote.value,
       };
-      this.$http.post(api, p).then((response) => {
-        if (response.data.code === "1") {
-          // window.alert("res:" + response.data.token)
-          this.token = response.data.token
-          // 登陆后将token存储在localStorage
-          localStorage.setItem('token',this.token)
-          this.goTo()
-        } else {
-          window.alert("请求错误:" + response.data.msg);
-        }
-        //注意this指向
-      }, function (err) {
+      axios
+        .post(api, p)
+        .then((response) => {
+          if (response.data.code === "1") {
+            this.token = response.data.token
+            this.uid = response.data.uid
+
+            // 注册成功后将token,uid存储在localStorage
+            localStorage.setItem('token', this.token)
+            localStorage.setItem('uid', this.uid)
+
+            this.goTo()
+          } else {
+            window.alert("请求错误:" + response.data.msg);
+          }
+        }).catch(err => {
         console.log(err);
       })
     },
     // 获取服务器验证码
     getNote() {
       //请求数据
-      var api = 'http://47.115.42.52:8888/note';
+      var api = '/note';
       var p = {
         phone: this.$refs.loginPhone.value,
       };
-      this.$http.post(api, p).then((response) => {
-        if (response.data.code === "1") {
-          window.alert("验证码是:" + response.data.note + "   60秒内有效")
-        } else {
-          window.alert("错误请求:" + response.data.msg)
-        }
-
-        //注意this指向
-      }, function (err) {
-        console.log(err);
-      })
+      axios
+        .post(api, p)
+        .then((response) => {
+          if (response.data.code === "1") {
+            window.alert("验证码是:" + response.data.note + "   60秒内有效")
+          } else {
+            window.alert("错误请求:" + response.data.msg)
+          }
+        })
+        .catch(err => {
+          console.log("调用出错:" + err);
+        });
     },
+
     cambiar_login() {
       document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login";
       document.querySelector('.cont_form_login').style.display = "block";
