@@ -4,13 +4,30 @@
 import './style/style.css'
 import './style/logincss.css'
 
-
 import VueResource from 'vue-resource'
 // 引入vue
 import Vue from 'vue'
 // 引入App
 import App from "./App.vue";
 import VueRouter from "vue-router";
+
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import BootstrapVue from 'bootstrap-vue'
+
+Vue.use(BootstrapVue)
+
+//element-ui的全部组件
+import ElementUI from 'element-ui'
+//element-ui的css
+import 'element-ui/lib/theme-chalk/index.css'
+//使用elementUI
+Vue.use(ElementUI)
+
+// 导入 axios
+import axios from "axios";
+// axios 全局配置
+axios.defaults.baseURL = 'http://127.0.0.1:8888'
 
 // 引入路由
 import router from './router'
