@@ -33,13 +33,25 @@
         </label>
       </div>
     </div>
-    <button class="btn btn-primary" type="submit">Submit form</button>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <button class="btn btn-primary" type="submit">Submit form</button>
+      </div>
+      <div class="col-md-6 mb-3">
+        <FileUpload/>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+    </div>
   </div>
 </template>
 
 <script>
 
 import axios from "axios";
+import FileUpload from "./FileUpload";
 
 export default {
   data() {
@@ -51,7 +63,7 @@ export default {
       role: ""
     }
   },
-  components: {},
+  components: {FileUpload},
 
   mounted() {
     var data = {'token': localStorage.getItem('token'), uid: localStorage.getItem('uid')}
