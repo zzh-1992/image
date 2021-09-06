@@ -19,7 +19,7 @@ import fileDownload from 'js-file-download'
 export default {
   data() {
     return {
-      value: ''
+      value: '',
     }
   },
   components: {},
@@ -46,7 +46,7 @@ export default {
     },
 
     download1() {
-      axios.post("/download", {}, {responseType: 'arraybuffer'}).then(response => {
+      axios.post("/download", {uid: localStorage.getItem('uid')}, {responseType: 'arraybuffer'}).then(response => {
         let blob = new Blob([response.data], {type: 'application/vnd.ms-excel'})
         let dateTime = new Date()
         let dateTimeStr = dateTime.getFullYear() + '-' + dateTime.getMonth() + '-' + dateTime.getDay()

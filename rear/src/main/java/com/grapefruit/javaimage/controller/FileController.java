@@ -4,6 +4,7 @@
 
 package com.grapefruit.javaimage.controller;
 
+import com.grapefruit.javaimage.req.BaseReq;
 import com.grapefruit.javaimage.rsp.AjaxResult;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,7 +62,10 @@ public class FileController {
     }
 
     @RequestMapping("/download")
-    public void download(HttpServletResponse response) throws IOException {
+    public void download(HttpServletResponse response, @RequestBody BaseReq req) throws IOException {
+        String uid = req.getUid();
+        System.out.println("uid:" + uid + " ==========>");
+
         // 创建excel文件
         XSSFWorkbook workbook = new XSSFWorkbook();
         // 创建工作页
@@ -110,7 +115,7 @@ public class FileController {
     @RequestMapping("/downloadTemplate")
     public void downloadTemplate(HttpServletResponse response) throws UnsupportedEncodingException {
         //文件路径
-        String path = "/Users/grape/.../controller/Template.xlsx";
+        String path = "src/main/java/com/grapefruit/javaimage/controller/Template.xlsx";
 
         // 设置响应头和客户端保存文件名
         response.setCharacterEncoding("utf-8");
