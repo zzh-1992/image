@@ -7,6 +7,8 @@ package com.grapefruit.javaimage.mapper;
 import com.grapefruit.javaimage.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 用户_mapper
  *
@@ -47,4 +49,9 @@ public interface UserMapper {
      * @return user
      */
     User selectUserByPhoneAndPassword(String phone, String password);
+
+
+    List<User> getUserList();
+
+    int deleteUser(String uid);
 }

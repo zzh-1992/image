@@ -42,6 +42,11 @@ public class User {
     private int roleId;
 
     /**
+     * 角色名称
+     */
+    private String role;
+
+    /**
      * 密码
      */
     private String password;
