@@ -6,6 +6,8 @@
     <div  class="tab-button-wrap richText">
       <button :class="{ on: state.curTheme === 'snow' }" @click="switchTheme('snow')">Theme snow</button>
       <button :class="{ on: state.curTheme === 'bubble' }" @click="switchTheme('bubble')">Theme bubble</button>
+
+      <button  @click="downloadRichText()">下载富文本</button>
     </div>
     <quill-editor
         v-if="state.showEditor"
@@ -114,6 +116,17 @@ export default {
             console.log(err)
           })
       console.log(this.content);
+    },
+    downloadRichText(){
+      axios
+          .post('/downloadRichText')
+          .then(response => {
+            this.state.content =  response.data
+            console.log("res:" + response.data)
+          })
+          .catch(err => {
+            console.log(err)
+          })
     }
   }
 }
